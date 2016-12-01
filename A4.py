@@ -1,11 +1,10 @@
-
-iimport pygame
+import pygame
 import time,random
 from pygame.sprite import Sprite
 
 pygame.init()
 
-
+image.load(imagename).convert_alpha()
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
@@ -15,13 +14,13 @@ display_width = 800
 display_height = 600
 
 gameDisplay=pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption("Harbaugh's Hungry") #Do I need to use the alpha convert instead of this function
+pygame.display.set_caption("Harbaugh's Hungry")
 
-icon=pygame.image.load("steak.png")
+icon=image.load("steak.png").convert_alpha()
 pygame.display.set_icon(icon)
 
-img=pygame.image.load("harbaugh.png")
-appleimg=pygame.image.load("steak.png")
+img=image.load("harbaugh.png").convert_alpha()
+appleimg=image.load("steak.png").convert_alpha()
 
 clock = pygame.time.Clock()
 
