@@ -15,7 +15,7 @@ display_width = 800
 display_height = 600
 
 gameDisplay=pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption("Harbaugh's Hungry")
+pygame.display.set_caption("Harbaugh's Hungry") #Do I need to use the alpha convert instead of this function
 
 icon=pygame.image.load("steak.png")
 pygame.display.set_icon(icon)
