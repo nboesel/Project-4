@@ -1,14 +1,16 @@
 import pygame
 import time,random
 from pygame.sprite import Sprite
+import os
 
 pygame.init()
 
-image.load(imagename).convert_alpha()
+
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
 green = (0,155,0)
+blue = (0,0,139)
 
 display_width = 800
 display_height = 600
@@ -16,16 +18,23 @@ display_height = 600
 gameDisplay=pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption("Harbaugh's Hungry")
 
-icon=image.load("steak.png").convert_alpha()
+
+icon=pygame.image.load("harbaugh.bmp").convert_alpha()
 pygame.display.set_icon(icon)
 
-img=image.load("harbaugh.png").convert_alpha()
-appleimg=image.load("steak.png").convert_alpha()
+img1=pygame.image.load("harbaugh.bmp").convert_alpha()
+appleimg1=pygame.image.load("steak.bmp").convert_alpha()
+
+img = pygame.transform.scale(img1, (35, 35))
+appleimg = pygame.transform.scale(appleimg1, (35,35))
+
+bng = pygame.image.load("gradient.bmp").convert_alpha()
+field = pygame.image.load("field.bmp").convert_alpha()
 
 clock = pygame.time.Clock()
 
-AppleThickness=30
-block_size = 20
+AppleThickness=35
+block_size = 35
 FPS = 15
 
 direction="right"
@@ -35,8 +44,8 @@ medfont = pygame.font.SysFont("comicsansms",50)
 largefont = pygame.font.SysFont("comicsansms",80)
 
 pygame.mixer.init()
-intro_sound=pygame.mixer.Sound("intro.wav")
-dead_sound=pygame.mixer.Sound("dead.wav")
+intro_sound=pygame.mixer.Sound("drum_roll.wav")
+dead_sound=pygame.mixer.Sound("shut_off.wav")
 
 def game_intro():
     intro=True
@@ -51,12 +60,12 @@ def game_intro():
                 if event.key==pygame.K_q:
                     pygame.quit()
                     quit()
-        gameDisplay.fill(white)
+        gameDisplay.blit(bng, (0,0))
         
-        message_to_screen("Welcome to Flafel",green,-100,"large")
+        message_to_screen("Welcome to Nick's Snake Game",green,-100,"medium")
         message_to_screen("The objective of the game is to eat steaks",black,-30)
-        message_to_screen("The more steaks you eat,the longer Harbaugh gets",black,10)
-        message_to_screen("If you Harbaugh runs into himself, or the edges, he dies!",black,50)
+        message_to_screen("The more steaks you eat,the bigger Harbaugh gets",black,10)
+        message_to_screen("If  Harbaugh runs into himself, or the edges, he dies!",black,50)
         message_to_screen("Press C to play, P to pause or Q to quit",black,180)
         pygame.display.update()
         clock.tick(15)
@@ -88,6 +97,7 @@ def score(score):
 
     text=smallfont.render("Score: "+str(score),True,black)
     gameDisplay.blit(text,[0,0])
+    return text
 
     
 def randAppleGen():
@@ -96,21 +106,26 @@ def randAppleGen():
     randAppley = round(random.randrange(0,display_height-AppleThickness))#/10.0)*10.0
     return randApplex,randAppley
 
-def snake(block_size,snakeList):
 
-    if direction=="right":
-        head=pygame.transform.rotate(img,270)
-    if direction=="left":
-        head=pygame.transform.rotate(img,90)
-    if direction=="up":
-        head=img
-    if direction=="down":
-        head=pygame.transform.rotate(img,180)
+class snake(pygame.sprite.Sprite):
+    def __init__(block_size,snakeList):
+        self.block_size = block_size
+        self.snakeList = snakeList
 
-    gameDisplay.blit(head,(snakeList[-1][0],snakeList[-1][1]))
+    def go (block_size, snakeList):
+        if direction=="right":
+            head=pygame.transform.rotate(img,270)
+        if direction=="left":
+            head=pygame.transform.rotate(img,90)
+        if direction=="up":
+            head=img
+        if direction=="down":
+            head=pygame.transform.rotate(img,180)
 
-    for XnY in snakeList[:-1]:
-        pygame.draw.rect(gameDisplay, green, (XnY[0],XnY[1],block_size,block_size))
+        gameDisplay.blit(head,(snakeList[-1][0],snakeList[-1][1]))
+
+        for XnY in snakeList[:-1]:
+            pygame.draw.rect(gameDisplay, blue, (XnY[0],XnY[1],block_size,block_size))
     
 def text_objects(text,color,size):
 
@@ -156,7 +171,7 @@ def gameLoop():
             pygame.display.update()
             
         while gameOver == True:
-            #gameDisplay.fill(white)
+            gameDisplay.fill(white)
             
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
@@ -175,19 +190,19 @@ def gameLoop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     direction="left"
-                    lead_x_change = -block_size
+                    lead_x_change = -block_size/2.5 + (1.25 * int(score(snakeLength-1)))
                     lead_y_change = 0
                 elif event.key == pygame.K_RIGHT:
                     direction="right"
-                    lead_x_change = block_size
+                    lead_x_change = block_size/2.5 + (1.25 * int(score(snakeLength-1)))
                     lead_y_change = 0
                 elif event.key == pygame.K_UP:
                     direction="up"
-                    lead_y_change = -block_size
+                    lead_y_change = -block_size/2.5 + (1.25 * int(score(snakeLength-1)))
                     lead_x_change = 0
                 elif event.key == pygame.K_DOWN:
                     direction="down"
-                    lead_y_change = block_size
+                    lead_y_change = block_size/2.5 + (1.25 * int(score(snakeLength-1)))
                     lead_x_change = 0
                 elif event.key==pygame.K_p:
                     pause()
@@ -198,7 +213,7 @@ def gameLoop():
 
         lead_x += lead_x_change
         lead_y += lead_y_change
-        gameDisplay.fill(white)
+        gameDisplay.blit(field, (0,0))
 
         gameDisplay.blit(appleimg,(randApplex,randAppley))
 
@@ -216,7 +231,7 @@ def gameLoop():
                 dead_sound.play()
                 
                 
-        snake(block_size,snakeList)
+        snake.go(block_size,snakeList)
 
         score(snakeLength-1)
 
@@ -236,6 +251,8 @@ def gameLoop():
     
     pygame.quit()
     quit()
+
+#Actually running the game
 intro_sound.play()
 game_intro()
 intro_sound.stop()
