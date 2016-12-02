@@ -25,17 +25,17 @@ pygame.display.set_icon(icon)
 img1=pygame.image.load("harbaugh.bmp").convert_alpha()
 appleimg1=pygame.image.load("steak.bmp").convert_alpha()
 
-img = pygame.transform.scale(img1, (35, 35))
-appleimg = pygame.transform.scale(appleimg1, (35,35))
+img = pygame.transform.scale(img1, (40, 40))
+appleimg = pygame.transform.scale(appleimg1, (40,40))
 
 bng = pygame.image.load("gradient.bmp").convert_alpha()
 field = pygame.image.load("field.bmp").convert_alpha()
 
 clock = pygame.time.Clock()
 
-AppleThickness=35
-block_size = 35
-FPS = 15
+AppleThickness=40
+block_size = 40
+FPS = 20
 
 direction="right"
 
@@ -95,9 +95,9 @@ def pause():
     
 def score(score):
 
-    text=smallfont.render("Score: "+str(score),True,black)
+    text=medfont.render("Score: "+str(score),True,white)
     gameDisplay.blit(text,[0,0])
-    return text
+    return score
 
     
 def randAppleGen():
@@ -190,19 +190,19 @@ def gameLoop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     direction="left"
-                    lead_x_change = -block_size/2.5 + (1.25 * int(score(snakeLength-1)))
+                    lead_x_change = -block_size/2.0 - (1.5 * int(score(snakeLength-1)))
                     lead_y_change = 0
                 elif event.key == pygame.K_RIGHT:
                     direction="right"
-                    lead_x_change = block_size/2.5 + (1.25 * int(score(snakeLength-1)))
+                    lead_x_change = block_size/2.0 + (1.5 * int(score(snakeLength-1)))
                     lead_y_change = 0
                 elif event.key == pygame.K_UP:
                     direction="up"
-                    lead_y_change = -block_size/2.5 + (1.25 * int(score(snakeLength-1)))
+                    lead_y_change = -block_size/2.0 - (1.5 * int(score(snakeLength-1)))
                     lead_x_change = 0
                 elif event.key == pygame.K_DOWN:
                     direction="down"
-                    lead_y_change = block_size/2.5 + (1.25 * int(score(snakeLength-1)))
+                    lead_y_change = block_size/2.0 + (1.5 * int(score(snakeLength-1)))
                     lead_x_change = 0
                 elif event.key==pygame.K_p:
                     pause()
